@@ -26,8 +26,8 @@
         --text: #d8dfeb;
         --text-dim: #8a94aa;
         --text-faint: #4d5670;
-        --accent: #7dd3fc;
-        --accent-2: #5eead4;
+        --accent: #7c8cff;
+        --accent-2: #7dd3fc;
         --accent-3: #fbbf24;
         --danger: #f87171;
         --success: #4ade80;
@@ -348,31 +348,84 @@
         user-select: none;
         opacity: 0.55;
       }
-      .pattern-input {
+      /* Pattern input is layered: a transparent <input> on top of a <pre>
+         that renders the same text with per-token color classes. The wrap
+         holds the border/background so the input itself can be transparent
+         without losing the field's visual chrome. */
+      .pattern-wrap {
         flex: 1;
         min-width: 240px;
+        position: relative;
         background: var(--bg-2);
         border: 1px solid var(--line);
-        color: var(--text);
-        padding: 11px 14px;
-        border-radius: 0;
         font-family: var(--mono);
         font-size: 14.5px;
-        outline: none;
+        line-height: 1.5;
         transition:
           border-color 0.15s,
           box-shadow 0.15s;
       }
-      .pattern-input:focus {
+      .pattern-wrap:has(.pattern-input:focus) {
         border-color: var(--accent);
         box-shadow:
           0 0 0 1px var(--accent),
           inset 0 0 30px rgba(125, 211, 252, 0.06);
       }
-      .pattern-input.invalid {
+      .pattern-wrap:has(.pattern-input.invalid) {
         border-color: var(--danger);
         box-shadow: 0 0 0 1px var(--danger);
       }
+      .pattern-input {
+        display: block;
+        width: 100%;
+        background: transparent;
+        border: 0;
+        color: transparent;
+        caret-color: var(--accent);
+        padding: 11px 14px;
+        border-radius: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        outline: none;
+        position: relative;
+        z-index: 1;
+      }
+      .pattern-input::placeholder {
+        color: var(--text-faint);
+      }
+      .pattern-hl {
+        position: absolute;
+        inset: 0;
+        margin: 0;
+        padding: 11px 14px;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        color: var(--text);
+        white-space: pre;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+      }
+      /* Pattern token colors.
+         Groups live in the cyan family (subtle shade per variant).
+         Lookarounds live in the purple/violet family — purples lean
+         pinker for lookaheads, bluer for lookbehinds; the negative
+         variant is the deeper shade of each. */
+      .rh-esc           { color: var(--accent-3); }   /* \d \w \s \b … */
+      .rh-class         { color: #f0abfc; }           /* [ … ] */
+      .rh-group         { color: var(--accent); font-weight: 600; }  /* (…)  capturing */
+      .rh-group-nc      { color: #38bdf8; font-weight: 600; }        /* (?:…) non-capturing */
+      .rh-group-named   { color: #67e8f9; font-weight: 600; }        /* (?<n>…) named */
+      .rh-lookahead     { color: #c084fc; font-weight: 600; }        /* (?=…)  pos. lookahead */
+      .rh-lookahead-neg { color: #a855f7; font-weight: 600; }        /* (?!…)  neg. lookahead */
+      .rh-lookbehind    { color: #818cf8; font-weight: 600; }        /* (?<=…) pos. lookbehind */
+      .rh-lookbehind-neg{ color: #6366f1; font-weight: 600; }        /* (?<!…) neg. lookbehind */
+      .rh-quant         { color: var(--accent-2); }   /* * + ? {n,m} */
+      .rh-anchor        { color: #fb923c; font-weight: 600; } /* ^ $ */
+      .rh-alt           { color: #f87171; font-weight: 600; } /* | */
+      .rh-dot           { color: var(--text-dim); }   /* . */
 
       .flags {
         display: flex;
@@ -1367,26 +1420,22 @@
         border: 1px solid var(--line);
         color: var(--text-faint);
       }
-      .tag.green {
-        border-color: rgba(34, 197, 94, 0.4);
-        color: #4ade80;
-      }
-      .tag.purple {
-        border-color: rgba(168, 85, 247, 0.4);
-        color: #c084fc;
-      }
-      .tag.blue {
-        border-color: rgba(125, 211, 252, 0.4);
-        color: var(--accent);
-      }
-      .tag.teal {
-        border-color: rgba(94, 234, 212, 0.4);
-        color: var(--accent-2);
-      }
-      .tag.amber {
-        border-color: rgba(251, 191, 36, 0.4);
-        color: var(--accent-3);
-      }
+      /* Explanation tag colors — kept in sync with the pattern-highlight
+         palette (.rh-* above) so a "Quantifier" tag visually matches the
+         quantifier glyph in the pattern, etc. */
+      .tag.t-esc            { border-color: rgba(251, 191, 36, 0.4);  color: var(--accent-3); }
+      .tag.t-class          { border-color: rgba(240, 171, 252, 0.4); color: #f0abfc; }
+      .tag.t-group          { border-color: rgba(125, 211, 252, 0.4); color: var(--accent); }
+      .tag.t-group-nc       { border-color: rgba(56, 189, 248, 0.45); color: #38bdf8; }
+      .tag.t-group-named    { border-color: rgba(103, 232, 249, 0.4); color: #67e8f9; }
+      .tag.t-lookahead      { border-color: rgba(192, 132, 252, 0.4); color: #c084fc; }
+      .tag.t-lookahead-neg  { border-color: rgba(168, 85, 247, 0.45); color: #a855f7; }
+      .tag.t-lookbehind     { border-color: rgba(129, 140, 248, 0.4); color: #818cf8; }
+      .tag.t-lookbehind-neg { border-color: rgba(99, 102, 241, 0.45); color: #6366f1; }
+      .tag.t-quant          { border-color: rgba(94, 234, 212, 0.4);  color: var(--accent-2); }
+      .tag.t-anchor         { border-color: rgba(251, 146, 60, 0.4);  color: #fb923c; }
+      .tag.t-alt            { border-color: rgba(248, 113, 113, 0.4); color: #f87171; }
+      .tag.t-dot            { border-color: rgba(138, 148, 170, 0.4); color: var(--text-dim); }
 
       .field-label.spaced {
         margin-top: 14px;
@@ -1523,10 +1572,13 @@
         .delim {
           display: none;
         }
-        .pattern-input {
+        .pattern-wrap {
           flex: 1 1 100%;
           min-width: 0;
           font-size: 14px;
+        }
+        .pattern-input,
+        .pattern-hl {
           padding: 12px 14px;
         }
         .flags {
@@ -1693,7 +1745,7 @@
           font-size: 12px;
           letter-spacing: 0.8px;
         }
-        .pattern-input {
+        .pattern-wrap {
           font-size: 13.5px;
         }
         .flag {
@@ -1784,14 +1836,17 @@
       <section class="pattern-bar">
         <div class="pattern-row">
           <span class="delim">/</span>
-          <input
-            id="pattern"
-            class="pattern-input"
-            type="text"
-            spellcheck="false"
-            autocomplete="off"
-            placeholder="Type a regular expression here, e.g.  \b\w+@\w+\.\w+\b"
-          />
+          <div class="pattern-wrap">
+            <pre id="patternHl" class="pattern-hl" aria-hidden="true"></pre>
+            <input
+              id="pattern"
+              class="pattern-input"
+              type="text"
+              spellcheck="false"
+              autocomplete="off"
+              placeholder="Type a regular expression here, e.g.  \b\w+@\w+\.\w+\b"
+            />
+          </div>
           <span class="delim">/</span>
           <div class="flags" id="flagBox">
             <label class="flag has-tip tip-below" data-flag="g"
@@ -2158,6 +2213,19 @@
         compile();
         render();
       });
+      /* Keep the highlight overlay's horizontal scroll in sync with the
+         input when the caret moves past the visible width or the input
+         scrolls. Input itself doesn't reliably fire `scroll`, so we also
+         re-sync on keyup/click/select. */
+      const syncPatternScroll = () => {
+        const hl = document.getElementById("patternHl");
+        if (hl) hl.scrollLeft = document.getElementById("pattern").scrollLeft;
+      };
+      ["scroll", "keyup", "click", "select"].forEach((ev) =>
+        document
+          .getElementById("pattern")
+          .addEventListener(ev, syncPatternScroll),
+      );
 
       $("#copyPat").addEventListener("click", () => {
         navigator.clipboard.writeText(`/${state.pattern}/${state.flags}`);
@@ -2282,7 +2350,123 @@
         if (state.view === "explain") renderExplain();
         if (state.view === "codegen") renderCode();
 
+        renderPatternHighlight();
         persist();
+      }
+
+      /* ---------- Pattern syntax highlighting ---------- */
+      function highlightPattern(p) {
+        const n = p.length;
+        const out = [];
+        let i = 0;
+        // Track open group kinds so the matching `)` reuses the opener's color.
+        const groupStack = [];
+        const push = (text, cls) => {
+          if (!text) return;
+          out.push(
+            cls
+              ? `<span class="${cls}">${escapeHTML(text)}</span>`
+              : escapeHTML(text),
+          );
+        };
+        while (i < n) {
+          const c = p[i];
+          // Escape sequence: \x — eat 2 chars
+          if (c === "\\" && i + 1 < n) {
+            push(p.slice(i, i + 2), "rh-esc");
+            i += 2;
+            continue;
+          }
+          // Character class [...]
+          if (c === "[") {
+            let j = i + 1;
+            while (j < n && p[j] !== "]") {
+              if (p[j] === "\\" && j + 1 < n) j++;
+              j++;
+            }
+            if (j < n) j++;
+            push(p.slice(i, j), "rh-class");
+            i = j;
+            continue;
+          }
+          // Group opener — pick the class per variant
+          if (c === "(") {
+            let len = 1;
+            let cls = "rh-group"; // capturing
+            if (p[i + 1] === "?") {
+              const n2 = p[i + 2];
+              if (n2 === ":")      { len = 3; cls = "rh-group-nc"; }
+              else if (n2 === "=") { len = 3; cls = "rh-lookahead"; }
+              else if (n2 === "!") { len = 3; cls = "rh-lookahead-neg"; }
+              else if (n2 === "<") {
+                const n3 = p[i + 3];
+                if (n3 === "=")      { len = 4; cls = "rh-lookbehind"; }
+                else if (n3 === "!") { len = 4; cls = "rh-lookbehind-neg"; }
+                else {
+                  const m = p.slice(i).match(/^\(\?<[^>]*>/);
+                  if (m) { len = m[0].length; cls = "rh-group-named"; }
+                }
+              }
+            }
+            groupStack.push(cls);
+            push(p.slice(i, i + len), cls);
+            i += len;
+            continue;
+          }
+          if (c === ")") {
+            const cls = groupStack.pop() || "rh-group";
+            push(")", cls);
+            i++;
+            continue;
+          }
+          // Quantifier {n,m}?
+          if (c === "{") {
+            const m = p.slice(i).match(/^\{\d+(?:,\d*)?\}\??/);
+            if (m) {
+              push(m[0], "rh-quant");
+              i += m[0].length;
+              continue;
+            }
+          }
+          // Simple quantifiers * + ? plus lazy/possessive modifier
+          if (c === "*" || c === "+" || c === "?") {
+            const next = p[i + 1];
+            const extra = next === "?" || next === "+" ? 1 : 0;
+            push(p.slice(i, i + 1 + extra), "rh-quant");
+            i += 1 + extra;
+            continue;
+          }
+          if (c === "^" || c === "$") {
+            push(c, "rh-anchor");
+            i++;
+            continue;
+          }
+          if (c === "|") {
+            push(c, "rh-alt");
+            i++;
+            continue;
+          }
+          if (c === ".") {
+            push(c, "rh-dot");
+            i++;
+            continue;
+          }
+          // Literal run
+          let lit = "";
+          while (i < n && !/[\\\[\](){}*+?|^$.]/.test(p[i])) {
+            lit += p[i];
+            i++;
+          }
+          push(lit, "");
+        }
+        return out.join("");
+      }
+
+      function renderPatternHighlight() {
+        const hl = $("#patternHl");
+        if (!hl) return;
+        hl.innerHTML = highlightPattern(state.pattern);
+        hl.scrollLeft = $("#pattern").scrollLeft;
       }
 
       /* ---------- Tester rendering ---------- */
@@ -2460,7 +2644,7 @@
           i++;
           let kind = "capturing group";
           let tag = "group";
-          let tagClass = "blue";
+          let tagClass = "t-group";
           let groupName = null;
           if (pattern[i] === "?") {
             const next = pattern[i + 1];
@@ -2468,26 +2652,27 @@
               i += 2;
               kind = "non-capturing group";
               tag = "non-capt";
+              tagClass = "t-group-nc";
             } else if (next === "=") {
               i += 2;
               kind = "positive lookahead — must be followed by";
               tag = "lookahead";
-              tagClass = "teal";
+              tagClass = "t-lookahead";
             } else if (next === "!") {
               i += 2;
               kind = "negative lookahead — must NOT be followed by";
               tag = "neg-look";
-              tagClass = "amber";
+              tagClass = "t-lookahead-neg";
             } else if (next === "<" && pattern[i + 2] === "=") {
               i += 3;
               kind = "positive lookbehind — must be preceded by";
               tag = "lookbehind";
-              tagClass = "teal";
+              tagClass = "t-lookbehind";
             } else if (next === "<" && pattern[i + 2] === "!") {
               i += 3;
               kind = "negative lookbehind — must NOT be preceded by";
               tag = "neg-look";
-              tagClass = "amber";
+              tagClass = "t-lookbehind-neg";
             } else if (next === "<") {
               let j = i + 2;
               while (j < n && pattern[j] !== ">") j++;
@@ -2495,7 +2680,7 @@
               i = j + 1;
               kind = `named capturing group "${groupName}"`;
               tag = "named";
-              tagClass = "purple";
+              tagClass = "t-group-named";
             } else {
               i++;
             }
@@ -2810,22 +2995,23 @@
         wrap.innerHTML = renderTokens(tokens);
       }
 
+      const KIND_TAG = {
+        Escape: "t-esc",
+        Unicode: "t-esc",
+        Hex: "t-esc",
+        Backref: "t-esc",
+        UProp: "t-esc",
+        "Char class": "t-class",
+        Quantifier: "t-quant",
+        Anchor: "t-anchor",
+        Alternation: "t-alt",
+        Dot: "t-dot",
+        Literal: "",
+      };
       function renderTokens(tokens) {
         return tokens
           .map((t) => {
-            const kindClass =
-              t.kindClass ||
-              (t.kind === "Quantifier"
-                ? "amber"
-                : t.kind === "Anchor"
-                  ? "purple"
-                  : t.kind === "Char class"
-                    ? "teal"
-                    : t.kind === "Literal"
-                      ? ""
-                      : t.kind === "Escape"
-                        ? "blue"
-                        : "");
+            const kindClass = t.kindClass || KIND_TAG[t.kind] || "";
             return `<div class="ex-node">
       <span class="ex-kind"><span class="tag ${kindClass}">${escapeHTML(t.kind)}</span></span>
       <span class="ex-token">${escapeHTML(t.raw) || "&nbsp;"}</span>
