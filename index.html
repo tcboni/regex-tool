@@ -385,7 +385,7 @@
       .flag {
         cursor: pointer;
         user-select: none;
-        padding: 9px 11px;
+        padding: 5px 11px;
         border-radius: 0;
         border-right: 1px solid var(--line-soft);
         color: var(--text-faint);
@@ -1432,6 +1432,278 @@
       .empty-match {
         color: var(--text-faint);
         font-style: italic;
+      }
+
+      /* ============================================================
+         RESPONSIVE — tablet
+         ============================================================ */
+      @media (max-width: 980px) {
+        .app {
+          padding: 20px 22px 22px;
+        }
+        .grid {
+          gap: 22px;
+        }
+        /* When the two-col grid stacks, keep the rows equal-height so
+           tester/replace still fill the view via grid 1fr rows. */
+        #view-tester .grid.two,
+        #view-replace > .grid.two {
+          grid-template-rows: 1fr 1fr;
+        }
+      }
+
+      /* ============================================================
+         RESPONSIVE — phone (drop viewport-fill, let the page scroll
+         naturally; reflow header / pattern bar / panels).
+         ============================================================ */
+      @media (max-width: 700px) {
+        html,
+        body {
+          height: auto;
+        }
+        .app {
+          height: auto;
+          min-height: 100%;
+          padding: 14px 12px 28px;
+          display: block;
+        }
+
+        /* Header reflows: brand row, then full-width tabs row */
+        header.top {
+          flex-wrap: wrap;
+          padding-bottom: 12px;
+          margin-bottom: 16px;
+          gap: 10px;
+        }
+        .brand {
+          flex: 1 1 auto;
+        }
+        .top-right {
+          width: 100%;
+          order: 2;
+          gap: 10px;
+        }
+        .tabs {
+          flex: 1 1 auto;
+          min-width: 0;
+          overflow-x: auto;
+          flex-wrap: nowrap;
+          scrollbar-width: none;
+        }
+        .tabs::-webkit-scrollbar {
+          width: 0;
+          height: 0;
+        }
+        .tabs::before,
+        .tabs::after {
+          display: none;
+        }
+        .tab {
+          white-space: nowrap;
+          flex-shrink: 0;
+          padding: 11px 13px;
+          font-size: 11px;
+        }
+        .github-link svg {
+          width: 22px;
+          height: 22px;
+        }
+
+        /* Pattern bar reflows: input on its own row, flags+buttons below */
+        .pattern-bar {
+          padding: 16px 14px 14px;
+          margin-bottom: 22px;
+        }
+        .pattern-bar::after {
+          left: 12px;
+        }
+        .pattern-row {
+          gap: 8px;
+        }
+        .delim {
+          display: none;
+        }
+        .pattern-input {
+          flex: 1 1 100%;
+          min-width: 0;
+          font-size: 14px;
+          padding: 12px 14px;
+        }
+        .flags {
+          order: 3;
+          flex: 1 1 100%;
+          overflow-x: auto;
+          scrollbar-width: none;
+        }
+        .flags::-webkit-scrollbar {
+          height: 0;
+        }
+        .flag {
+          flex: 1 0 auto;
+          text-align: center;
+          padding: 11px 0;
+          min-width: 40px;
+        }
+        #copyPat,
+        #clearPat {
+          flex: 1 0 auto;
+          padding: 10px 14px;
+        }
+        .status-line {
+          gap: 14px;
+          font-size: 10px;
+        }
+
+        /* Views: drop the viewport-fill layout, let the page scroll */
+        .views {
+          flex: none;
+          min-height: 0;
+          display: block;
+        }
+        .view {
+          flex: none;
+          min-height: 0;
+        }
+        .view.active {
+          display: block;
+        }
+
+        /* Tester + Replace: panels stack with natural heights, internal
+           scroll only on the matches list (capped) */
+        #view-tester .grid.two,
+        #view-replace > .grid.two {
+          flex: none;
+          grid-template-rows: none;
+          gap: 22px;
+        }
+        #view-tester .panel,
+        #view-replace > .grid.two > .panel,
+        #view-replace > .panel-stack {
+          display: block;
+          min-height: 0;
+          max-height: none;
+        }
+        #view-tester .test-area-wrap {
+          flex: none;
+          overflow: visible;
+          height: 50vh;
+          min-height: 280px;
+        }
+        #view-tester .test-area {
+          height: 100%;
+        }
+        #view-tester .matches-list {
+          flex: none;
+          max-height: 60vh;
+        }
+        #view-replace > .grid.two > .panel > .panel-body {
+          flex: none;
+          display: block;
+        }
+        #view-replace > .grid.two > .panel > .panel-body > .textarea {
+          flex: none;
+          min-height: 200px;
+          height: 35vh;
+        }
+        #view-replace > .grid.two > .panel > .panel-body > .replace-output {
+          flex: none;
+          overflow: visible;
+          min-height: 150px;
+        }
+
+        /* Single-panel views: no internal scroll, just let page scroll */
+        #view-explain > .panel,
+        #view-builder > .panel,
+        #view-library > .panel,
+        #view-cheatsheet > .panel,
+        #view-codegen > .panel {
+          flex: none;
+          display: block;
+        }
+        #view-explain > .panel > .panel-body,
+        #view-builder > .panel > .panel-body,
+        #view-library > .panel > .panel-body,
+        #view-cheatsheet > .panel > .panel-body {
+          flex: none;
+          overflow: visible;
+        }
+        #view-codegen > .panel > .panel-body {
+          display: block;
+        }
+        #view-codegen .code-out {
+          flex: none;
+          max-height: 60vh;
+          overflow: auto;
+        }
+
+        /* Single-column card grids */
+        .lib-grid {
+          grid-template-columns: 1fr;
+        }
+        .cheat-grid {
+          grid-template-columns: 1fr;
+        }
+
+        /* Builder chips: larger tap targets */
+        .builder-chip {
+          padding: 9px 11px;
+          font-size: 12.5px;
+        }
+        .builder-row {
+          gap: 7px;
+        }
+
+        /* Status bar at the bottom of content */
+        .status-bar {
+          margin-top: 22px;
+          padding: 10px 14px;
+        }
+
+        /* Tooltips don't work on touch — hide them */
+        .has-tip .tip {
+          display: none;
+        }
+
+        /* Panel h3: a bit more breathing room for thumb reach */
+        .panel h3 {
+          padding: 12px 14px;
+        }
+        .panel-body {
+          padding: 14px 14px;
+        }
+
+        /* Match/cheat rows: tighter padding */
+        .cheat-row {
+          grid-template-columns: 80px 1fr;
+          gap: 8px;
+        }
+        .match-item {
+          padding: 10px 12px;
+        }
+      }
+
+      /* ============================================================
+         RESPONSIVE — very small (≤380px)
+         ============================================================ */
+      @media (max-width: 380px) {
+        .app {
+          padding: 12px 10px 24px;
+        }
+        .brand h1 {
+          font-size: 12px;
+          letter-spacing: 0.8px;
+        }
+        .pattern-input {
+          font-size: 13.5px;
+        }
+        .flag {
+          padding: 11px 0;
+          font-size: 12px;
+        }
+        .tab {
+          padding: 11px 10px;
+          font-size: 10.5px;
+        }
       }
     </style>
   </head>
