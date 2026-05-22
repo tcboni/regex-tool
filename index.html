@@ -2370,6 +2370,7 @@
           );
         };
         while (i < n) {
+          const start = i;
           const c = p[i];
           // Escape sequence: \x — eat 2 chars
           if (c === "\\" && i + 1 < n) {
@@ -2457,7 +2458,19 @@
             lit += p[i];
             i++;
           }
-          push(lit, "");
+          if (lit) {
+            push(lit, "");
+            continue;
+          }
+          // Fallback: a special char that no rule above consumed
+          // (stray `}`, `]`, unmatched `{`, trailing `\`, etc.).
+          // Emit as a literal and advance one char so the loop always
+          // makes progress and can never spin forever.
+          push(p[i], "");
+          i++;
+          // Defensive guard: if for any reason no branch advanced i,
+          // bail out instead of looping forever.
+          if (i === start) break;
         }
         return out.join("");
       }
@@ -2959,29 +2972,91 @@
               });
               continue;
             }
+            // Not a valid quantifier (e.g. a lone `{`) — fall through and
+            // treat the character as a literal so it shows up in the output.
           }
 
+          // Stray closers like `}` or `]` aren't matched by any branch above
+          // and aren't part of the literal-run charset below, so handle them
+          // here as literals.
+          const isStrayLiteral =
+            c === "{" || c === "}" || c === "]";
+
           let lit = "";
+          if (isStrayLiteral) {
+            lit = c;
+            i++;
+          }
           while (i < n && !/[\\\[\](){}|^$.*+?]/.test(pattern[i])) {
             lit += pattern[i];
             i++;
           }
           if (lit) {
-            tokens.push({
-              raw: lit,
-              kind: "Literal",
-              desc: `match the literal text "${lit}"`,
-            });
-            const q = readQuantifier();
-            if (q) tokens[tokens.length - 1].desc += " — quantified next";
-            if (q)
+            // Helper: push a literal, merging with the previous literal
+            // token so stray `{`/`}` or split runs don't fragment the view.
+            const pushLiteral = (text) => {
+              if (!text) return;
+              const prev = tokens[tokens.length - 1];
+              if (prev && prev.kind === "Literal") {
+                prev.raw += text;
+                prev.desc = `match the literal text "${prev.raw}"`;
+              } else {
+                tokens.push({
+                  raw: text,
+                  kind: "Literal",
+                  desc: `match the literal text "${text}"`,
+                });
+              }
+            };
+
+            // A trailing quantifier applies to ONE atom — the last char of
+            // the literal run — not the whole run. So `abc{1,2}` becomes
+            // `ab` then `c{1,2}`.
+            const peekQuantifier = () => {
+              if (i >= n) return false;
+              const ch = pattern[i];
+              if (ch === "*" || ch === "+" || ch === "?") return true;
+              if (ch === "{") {
+                let j = i + 1;
+                while (j < n && pattern[j] !== "}") j++;
+                return (
+                  j < n && /^\d+(,\d*)?$/.test(pattern.slice(i + 1, j))
+                );
+              }
+              return false;
+            };
+
+            if (peekQuantifier() && lit.length > 1) {
+              pushLiteral(lit.slice(0, -1));
+              const tail = lit.slice(-1);
               tokens.push({
-                raw: q.raw,
-                kind: "Quantifier",
-                desc: describeQuantifier(q),
+                raw: tail,
+                kind: "Literal",
+                desc: `match the literal text "${tail}" — quantified next`,
               });
+              const q = readQuantifier();
+              if (q)
+                tokens.push({
+                  raw: q.raw,
+                  kind: "Quantifier",
+                  desc: describeQuantifier(q),
+                });
+            } else {
+              pushLiteral(lit);
+              const q = readQuantifier();
+              if (q) {
+                tokens[tokens.length - 1].desc += " — quantified next";
+                tokens.push({
+                  raw: q.raw,
+                  kind: "Quantifier",
+                  desc: describeQuantifier(q),
+                });
+              }
+            }
             continue;
           }
+          // Defensive: nothing consumed this iteration. Advance to avoid
+          // any chance of an infinite loop on unexpected input.
           i++;
         }
 
