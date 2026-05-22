@@ -2465,7 +2465,14 @@
       function renderPatternHighlight() {
         const hl = $("#patternHl");
         if (!hl) return;
-        hl.innerHTML = highlightPattern(state.pattern);
+        // Skip tokenization when the pattern doesn't compile — the highlighter
+        // assumes a well-formed pattern, so feeding it broken input (an
+        // unclosed group, a stray `\` at EOS, etc.) can throw or produce
+        // garbage. Fall back to plain escaped text so the overlay still
+        // matches what the user typed.
+        hl.innerHTML = state.error
+          ? escapeHTML(state.pattern)
+          : highlightPattern(state.pattern);
         hl.scrollLeft = $("#pattern").scrollLeft;
       }
 
