@@ -2701,6 +2701,26 @@
               kind = `named capturing group "${groupName}"`;
               tag = "named";
               tagClass = "t-group-named";
+            } else if (/[ims-]/.test(next)) {
+              let j = i + 1;
+              while (j < n && /[ims-]/.test(pattern[j])) j++;
+              if (pattern[j] === ":") {
+                const mods = pattern.slice(i + 1, j);
+                const dash = mods.indexOf("-");
+                const on = (dash === -1 ? mods : mods.slice(0, dash))
+                  .split("")
+                  .filter((c) => c !== "-");
+                const off = dash === -1 ? [] : mods.slice(dash + 1).split("");
+                const parts = [];
+                if (on.length) parts.push(on.join("") + " on");
+                if (off.length) parts.push(off.join("") + " off");
+                kind = `inline flag modifier (${parts.join(", ")}) for`;
+                tag = "modifier";
+                tagClass = "t-group-nc";
+                i = j + 1;
+              } else {
+                i++;
+              }
             } else {
               i++;
             }
@@ -3513,6 +3533,7 @@
             ["[a-z]", "char in range a-z"],
             ["\\p{...}", "unicode property (u flag), e.g. \\p{Letter}"],
             ["\\P{...}", "negated unicode property (u flag)"],
+            ["[\\b]", "backspace (only inside character class)"],
           ],
         },
         {
@@ -3547,6 +3568,8 @@
             ["\\1", "backref to group 1"],
             ["\\k<n>", "backref to named group"],
             ["a|b", "alternation"],
+            ["(?ims:x)", "inline flag modifier — i/m/s on for x"],
+            ["(?-ims:x)", "inline flag modifier — i/m/s off for x"],
           ],
         },
         {
