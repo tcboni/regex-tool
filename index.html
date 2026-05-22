@@ -2834,6 +2834,14 @@
               i += 4;
               tokens.push(node);
               continue;
+            } else if (next === "c" && /[A-Za-z]/.test(pattern[i + 2] || "")) {
+              const letter = pattern[i + 2].toUpperCase();
+              node.raw = pattern.slice(i, i + 3);
+              node.desc = `control character Ctrl-${letter}`;
+              node.kind = "Escape";
+              i += 3;
+              tokens.push(node);
+              continue;
             } else if (next === "k" && pattern[i + 2] === "<") {
               const j = pattern.indexOf(">", i + 2);
               const name = pattern.slice(i + 3, j);
@@ -2843,18 +2851,20 @@
               i = j + 1;
               tokens.push(node);
               continue;
-            } else if (next === "p" || next === "P") {
+            } else if (
+              (next === "p" || next === "P") &&
+              pattern[i + 2] === "{" &&
+              pattern.indexOf("}", i + 2) > -1
+            ) {
               const j = pattern.indexOf("}", i + 2);
-              if (j > -1) {
-                node.raw = pattern.slice(i, j + 1);
-                node.desc =
-                  (next === "p" ? "" : "NOT ") +
-                  `a unicode property: ${pattern.slice(i + 3, j)}`;
-                node.kind = "UProp";
-                i = j + 1;
-                tokens.push(node);
-                continue;
-              }
+              node.raw = pattern.slice(i, j + 1);
+              node.desc =
+                (next === "p" ? "" : "NOT ") +
+                `a unicode property: ${pattern.slice(i + 3, j)} (requires u flag)`;
+              node.kind = "UProp";
+              i = j + 1;
+              tokens.push(node);
+              continue;
             } else {
               node.desc = `literal "${next}" (escaped)`;
               node.kind = "Literal";
@@ -3122,6 +3132,8 @@
           ["[A-Z]", "uppercase letters"],
           ["[0-9]", "digits"],
           ["[a-zA-Z0-9]", "alphanumeric"],
+          ["\\p{L}", "unicode property: Letter (u flag)"],
+          ["\\P{L}", "NOT unicode property: Letter (u flag)"],
         ],
         anchorChips: [
           ["^", "start of string/line"],
@@ -3499,6 +3511,8 @@
             ["[abc]", "a, b, or c"],
             ["[^abc]", "not a, b, or c"],
             ["[a-z]", "char in range a-z"],
+            ["\\p{...}", "unicode property (u flag), e.g. \\p{Letter}"],
+            ["\\P{...}", "negated unicode property (u flag)"],
           ],
         },
         {
@@ -3508,8 +3522,6 @@
             ["$", "end of string (or line, m flag)"],
             ["\\b", "word boundary"],
             ["\\B", "non-word boundary"],
-            ["\\A", "start of input (some engines)"],
-            ["\\Z", "end of input (some engines)"],
           ],
         },
         {
@@ -3554,6 +3566,7 @@
             ["m", "multiline — ^ $ per line"],
             ["s", "dotall — . matches newlines"],
             ["u", "unicode mode"],
+            ["v", "unicodeSets — set ops in [...], stricter than u"],
             ["y", "sticky — from lastIndex"],
             ["d", "indices for matches"],
           ],
@@ -3568,6 +3581,9 @@
             ["\\xFF", "hex char"],
             ["\\uFFFF", "unicode char"],
             ["\\u{FFFFF}", "unicode code point (u flag)"],
+            ["\\cA", "control char (Ctrl-A through Ctrl-Z)"],
+            ["\\f", "form feed"],
+            ["\\v", "vertical tab"],
           ],
         },
         {
