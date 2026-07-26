@@ -7,7 +7,7 @@
     <link
       rel="icon"
       type="image/svg+xml"
-      href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23070a11'/><g stroke='%237dd3fc' stroke-width='1.5' fill='none' stroke-linecap='square'><path d='M3 9 L3 3 L9 3'/><path d='M23 3 L29 3 L29 9'/><path d='M3 23 L3 29 L9 29'/><path d='M23 29 L29 29 L29 23'/></g><line x1='11' y1='23' x2='14' y2='9' stroke='%237dd3fc' stroke-width='2.25' stroke-linecap='round'/><line x1='18' y1='23' x2='21' y2='9' stroke='%237dd3fc' stroke-width='2.25' stroke-linecap='round'/><circle cx='16' cy='20' r='1.9' fill='%235eead4'/></svg>"
+      href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23070a11'/><g stroke='%237dd3fc' stroke-width='1.5' fill='none' stroke-linecap='square'><path d='M3 9 L3 3 L9 3'/><path d='M23 3 L29 3 L29 9'/><path d='M3 23 L3 29 L9 29'/><path d='M23 29 L29 29 L29 23'/></g><g stroke='%237dd3fc' stroke-width='2' stroke-linecap='round'><line x1='20.5' y1='10' x2='20.5' y2='21'/><line x1='15.7' y1='12.75' x2='25.3' y2='18.25'/><line x1='15.7' y1='18.25' x2='25.3' y2='12.75'/></g><circle cx='10' cy='21' r='2.1' fill='%235eead4'/></svg>"
     />
     <style>
       :root {
@@ -297,31 +297,8 @@
         position: relative;
         flex-shrink: 0;
       }
-      .pattern-bar::before {
-        content: "";
-        position: absolute;
-        inset: calc(var(--tick) * -1);
-        pointer-events: none;
-        background:
-          linear-gradient(var(--line-strong), var(--line-strong)) top left /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) top left /
-            var(--tick-w) var(--tick) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) top right /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) top right /
-            var(--tick-w) var(--tick) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom left /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom left /
-            var(--tick-w) var(--tick) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom right /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom right /
-            var(--tick-w) var(--tick) no-repeat;
-      }
       .pattern-bar::after {
-        content: "PATTERN ▸ /";
+        content: "PATTERN";
         position: absolute;
         top: -7px;
         left: 16px;
@@ -508,6 +485,13 @@
       .has-tip:focus-visible .tip {
         opacity: 1;
       }
+      /* Browsers without CSS Anchor Positioning can't place the tips —
+         hide them entirely rather than let them appear at 0,0. */
+      @supports not (anchor-name: --tip-anchor) {
+        .has-tip .tip {
+          display: none;
+        }
+      }
 
       .error-msg {
         margin-top: 12px;
@@ -686,29 +670,6 @@
       .status-bar.show {
         display: block;
       }
-      .status-bar::before {
-        content: "";
-        position: absolute;
-        inset: calc(var(--tick) * -1);
-        pointer-events: none;
-        background:
-          linear-gradient(var(--line-strong), var(--line-strong)) top left /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) top left /
-            var(--tick-w) var(--tick) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) top right /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) top right /
-            var(--tick-w) var(--tick) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom left /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom left /
-            var(--tick-w) var(--tick) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom right /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom right /
-            var(--tick-w) var(--tick) no-repeat;
-      }
       .status-bar::after {
         content: "STATUS";
         position: absolute;
@@ -745,29 +706,6 @@
         border: 1px solid var(--line);
         border-radius: 0;
         position: relative;
-      }
-      .panel::before {
-        content: "";
-        position: absolute;
-        inset: calc(var(--tick) * -1);
-        pointer-events: none;
-        background:
-          linear-gradient(var(--line-strong), var(--line-strong)) top left /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) top left /
-            var(--tick-w) var(--tick) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) top right /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) top right /
-            var(--tick-w) var(--tick) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom left /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom left /
-            var(--tick-w) var(--tick) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom right /
-            var(--tick) var(--tick-w) no-repeat,
-          linear-gradient(var(--line-strong), var(--line-strong)) bottom right /
-            var(--tick-w) var(--tick) no-repeat;
       }
       .panel h3 {
         margin: 0;
@@ -845,45 +783,48 @@
         border-radius: 0;
         transition: filter 0.12s;
       }
+      /* Match color cycle — ordered so consecutive matches contrast
+         strongly (cyan → amber → pink → lime → …); near-neighbors like
+         cyan/teal and amber/orange are kept far apart in the sequence. */
       .match-mark.c0 {
         background: rgba(125, 211, 252, 0.22);
         box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.55);
       }
       .match-mark.c1 {
-        background: rgba(94, 234, 212, 0.28);
-        box-shadow: inset 0 0 0 1px rgba(94, 234, 212, 0.55);
-      }
-      .match-mark.c2 {
         background: rgba(251, 191, 36, 0.3);
         box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.6);
       }
-      .match-mark.c3 {
+      .match-mark.c2 {
         background: rgba(244, 114, 182, 0.3);
         box-shadow: inset 0 0 0 1px rgba(244, 114, 182, 0.6);
       }
-      .match-mark.c4 {
+      .match-mark.c3 {
         background: rgba(163, 230, 53, 0.28);
         box-shadow: inset 0 0 0 1px rgba(163, 230, 53, 0.6);
+      }
+      .match-mark.c4 {
+        background: rgba(192, 132, 252, 0.32);
+        box-shadow: inset 0 0 0 1px rgba(192, 132, 252, 0.6);
       }
       .match-mark.c5 {
         background: rgba(251, 146, 60, 0.3);
         box-shadow: inset 0 0 0 1px rgba(251, 146, 60, 0.6);
       }
       .match-mark.c6 {
+        background: rgba(94, 234, 212, 0.28);
+        box-shadow: inset 0 0 0 1px rgba(94, 234, 212, 0.55);
+      }
+      .match-mark.c7 {
         background: rgba(248, 113, 113, 0.3);
         box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.6);
       }
-      .match-mark.c7 {
-        background: rgba(192, 132, 252, 0.32);
-        box-shadow: inset 0 0 0 1px rgba(192, 132, 252, 0.6);
-      }
       .match-mark.c8 {
-        background: rgba(56, 189, 248, 0.3);
-        box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.6);
-      }
-      .match-mark.c9 {
         background: rgba(217, 70, 239, 0.3);
         box-shadow: inset 0 0 0 1px rgba(217, 70, 239, 0.6);
+      }
+      .match-mark.c9 {
+        background: rgba(56, 189, 248, 0.3);
+        box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.6);
       }
       .match-mark.focus {
         filter: brightness(1.45) saturate(1.2);
@@ -896,34 +837,34 @@
         border-left: 3px solid transparent;
       }
       .match-item.c0 {
-        border-left-color: rgba(124, 140, 255, 0.85);
+        border-left-color: rgba(125, 211, 252, 0.85);
       }
       .match-item.c1 {
-        border-left-color: rgba(94, 234, 212, 0.85);
-      }
-      .match-item.c2 {
         border-left-color: rgba(251, 191, 36, 0.9);
       }
-      .match-item.c3 {
+      .match-item.c2 {
         border-left-color: rgba(244, 114, 182, 0.9);
       }
-      .match-item.c4 {
+      .match-item.c3 {
         border-left-color: rgba(163, 230, 53, 0.9);
+      }
+      .match-item.c4 {
+        border-left-color: rgba(192, 132, 252, 0.9);
       }
       .match-item.c5 {
         border-left-color: rgba(251, 146, 60, 0.9);
       }
       .match-item.c6 {
-        border-left-color: rgba(248, 113, 113, 0.9);
+        border-left-color: rgba(94, 234, 212, 0.85);
       }
       .match-item.c7 {
-        border-left-color: rgba(192, 132, 252, 0.9);
+        border-left-color: rgba(248, 113, 113, 0.9);
       }
       .match-item.c8 {
-        border-left-color: rgba(56, 189, 248, 0.9);
+        border-left-color: rgba(217, 70, 239, 0.9);
       }
       .match-item.c9 {
-        border-left-color: rgba(217, 70, 239, 0.9);
+        border-left-color: rgba(56, 189, 248, 0.9);
       }
 
       .matches-list {
@@ -1187,15 +1128,14 @@
         content: "";
         position: absolute;
         top: -1px;
-        right: -1px;
-        width: 12px;
-        height: 12px;
+        left: -1px;
+        width: 10px;
+        height: 10px;
         background:
-          linear-gradient(var(--accent), var(--accent)) top right / 12px 1px
-            no-repeat,
-          linear-gradient(var(--accent), var(--accent)) top right / 1px 12px
-            no-repeat;
-        opacity: 0.6;
+          linear-gradient(var(--line-strong), var(--line-strong)) top left /
+            10px 1px no-repeat,
+          linear-gradient(var(--line-strong), var(--line-strong)) top left / 1px
+            10px no-repeat;
       }
       .cheat-group h4 {
         margin: 0 0 10px 0;
@@ -1205,6 +1145,10 @@
         text-transform: uppercase;
         letter-spacing: 1.2px;
         font-weight: 600;
+      }
+      .cheat-group h4::before {
+        content: "// ";
+        color: var(--text-faint);
       }
       .cheat-row {
         display: grid;
@@ -1280,10 +1224,6 @@
         word-break: break-all;
         line-height: 1.65;
         position: relative;
-      }
-      .code-out:before {
-        content: "";
-        display: inline-block;
       }
       .copy-btn {
         position: absolute;
@@ -1425,7 +1365,7 @@
          quantifier glyph in the pattern, etc. */
       .tag.t-esc            { border-color: rgba(251, 191, 36, 0.4);  color: var(--accent-3); }
       .tag.t-class          { border-color: rgba(240, 171, 252, 0.4); color: #f0abfc; }
-      .tag.t-group          { border-color: rgba(125, 211, 252, 0.4); color: var(--accent); }
+      .tag.t-group          { border-color: rgba(124, 140, 255, 0.4); color: var(--accent); }
       .tag.t-group-nc       { border-color: rgba(56, 189, 248, 0.45); color: #38bdf8; }
       .tag.t-group-named    { border-color: rgba(103, 232, 249, 0.4); color: #67e8f9; }
       .tag.t-lookahead      { border-color: rgba(192, 132, 252, 0.4); color: #c084fc; }
@@ -1449,6 +1389,9 @@
         letter-spacing: 0;
         font-weight: 400;
         margin-left: 6px;
+      }
+      .replace-tokens {
+        margin: 10px 0 0;
       }
       .replace-output {
         margin: 0;
@@ -1764,6 +1707,7 @@
       <header class="top">
         <div class="brand">
           <div class="logo" aria-hidden="true">
+            <!-- Corner brackets framing the classic ".*" wildcard -->
             <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
               <g
                 stroke="#7dd3fc"
@@ -1776,25 +1720,12 @@
                 <path d="M3 23 L3 29 L9 29" />
                 <path d="M23 29 L29 29 L29 23" />
               </g>
-              <line
-                x1="11"
-                y1="23"
-                x2="14"
-                y2="9"
-                stroke="#7dd3fc"
-                stroke-width="2.25"
-                stroke-linecap="round"
-              />
-              <line
-                x1="18"
-                y1="23"
-                x2="21"
-                y2="9"
-                stroke="#7dd3fc"
-                stroke-width="2.25"
-                stroke-linecap="round"
-              />
-              <circle cx="16" cy="20" r="1.9" fill="#5eead4" />
+              <g stroke="#7dd3fc" stroke-width="2" stroke-linecap="round">
+                <line x1="20.5" y1="10" x2="20.5" y2="21" />
+                <line x1="15.7" y1="12.75" x2="25.3" y2="18.25" />
+                <line x1="15.7" y1="18.25" x2="25.3" y2="12.75" />
+              </g>
+              <circle cx="10" cy="21" r="2.1" fill="#5eead4" />
             </svg>
           </div>
           <div>
@@ -1833,7 +1764,7 @@
         </div>
       </header>
 
-      <section class="pattern-bar">
+      <section class="pattern-bar ticked">
         <div class="pattern-row">
           <span class="delim">/</span>
           <div class="pattern-wrap">
@@ -1943,10 +1874,10 @@
                   placeholder="Input text..."
                 ></textarea>
                 <label class="field-label spaced">
-                  Replacement string
+                  Replacement
                   <span class="field-hint"
-                    >use $1, $2 for groups, $&amp; for full match, $` $' for
-                    before/after</span
+                    >every match becomes this text — $ tokens insert parts of
+                    the match</span
                   >
                 </label>
                 <input
@@ -1954,8 +1885,9 @@
                   id="replaceWith"
                   type="text"
                   spellcheck="false"
-                  placeholder="Replacement..."
+                  placeholder="Leave empty to delete matches"
                 />
+                <div class="builder-row replace-tokens" id="replaceTokens"></div>
               </div>
             </div>
             <div class="panel">
@@ -1976,7 +1908,7 @@
           <div class="panel panel-stack">
             <h3>
               Split
-              <span class="right">splits the test string on every match</span>
+              <span class="right">Splits the test string on every match</span>
             </h3>
             <div class="panel-body">
               <div class="split-result" id="splitOut"></div>
@@ -2004,7 +1936,10 @@
         <!-- BUILDER VIEW -->
         <div class="view" id="view-builder">
           <div class="panel">
-            <h3>Regex Builder — click chips to append to the pattern</h3>
+            <h3>
+              Regex Builder
+              <span class="right">Click a chip to insert it at the cursor</span>
+            </h3>
             <div class="panel-body">
               <div class="section">
                 <h4 class="section-title">Character classes</h4>
@@ -2075,7 +2010,10 @@
         <!-- CHEATSHEET VIEW -->
         <div class="view" id="view-cheatsheet">
           <div class="panel">
-            <h3>Regex Cheatsheet</h3>
+            <h3>
+              Regex Cheatsheet
+              <span class="right">JavaScript flavor</span>
+            </h3>
             <div class="panel-body">
               <div class="cheat-grid" id="cheatGrid"></div>
             </div>
@@ -2102,7 +2040,7 @@
         </div>
       </div>
 
-      <footer class="status-bar" id="statusBar">
+      <footer class="status-bar ticked" id="statusBar">
         <div class="status-line" id="statusLine">
           <span class="stat"><strong id="matchCount">0</strong> matches</span>
           <span class="stat"><strong id="groupCount">0</strong> groups</span>
@@ -2278,17 +2216,9 @@
         state.error = null;
         if (!state.pattern) return;
         try {
-          state.regex = new RegExp(
-            state.pattern,
-            state.flags + (state.flags.includes("d") ? "" : "d"),
-          );
+          state.regex = new RegExp(state.pattern, state.flags);
         } catch (err) {
-          try {
-            state.regex = new RegExp(state.pattern, state.flags);
-          } catch (e2) {
-            state.error = err.message;
-            state.regex = null;
-          }
+          state.error = err.message;
         }
       }
 
@@ -2577,12 +2507,39 @@
       }
 
       /* ---------- Replace rendering ---------- */
+      /* Clickable $-token chips under the replacement field — each inserts
+         a JS replacement-pattern token at the cursor. */
+      const REPLACE_TOKENS = [
+        ["$1", "what capture group 1 matched ($2, $3… for the rest)"],
+        ["$&", "the whole match"],
+        ["$`", "the text before the match"],
+        ["$'", "the text after the match"],
+        ["$<name>", "what a named group matched"],
+        ["$$", "a literal $"],
+      ];
+      function buildReplaceTokens() {
+        const wrap = $("#replaceTokens");
+        wrap.innerHTML = REPLACE_TOKENS.map(
+          ([t, d]) =>
+            `<span class="builder-chip has-tip" data-tok="${escapeAttr(t)}">${escapeHTML(t)}<span class="tip">${escapeHTML(d)}</span></span>`,
+        ).join("");
+        $$(".builder-chip", wrap).forEach((el) => {
+          el.addEventListener("click", () => {
+            const inp = $("#replaceWith");
+            insertAtCursor(inp, el.dataset.tok);
+            state.replaceWith = inp.value;
+            renderReplace();
+            persist();
+          });
+        });
+      }
+
       function renderReplace() {
         const out = $("#replaceOut");
         const splitWrap = $("#splitOut");
         if (!state.regex) {
           out.textContent = "";
-          splitWrap.innerHTML = "";
+          splitWrap.innerHTML = `<div class="empty">Enter a pattern above.</div>`;
           return;
         }
         try {
@@ -2638,7 +2595,6 @@
         }
 
         function describeQuantifier(q) {
-          const m = q.raw.match(/^(\*|\+|\?|\{(\d+),?(\d*)\}|\{(\d+)\})/);
           let base = "";
           if (q.raw.startsWith("*")) base = "zero or more times";
           else if (q.raw.startsWith("+")) base = "one or more times";
@@ -3210,14 +3166,8 @@
         }
         $$(".builder-chip").forEach((el) => {
           el.addEventListener("click", () => {
-            const ins = el.dataset.ins;
             const inp = $("#pattern");
-            const start = inp.selectionStart ?? inp.value.length;
-            const end = inp.selectionEnd ?? inp.value.length;
-            inp.value = inp.value.slice(0, start) + ins + inp.value.slice(end);
-            const pos = start + ins.length;
-            inp.setSelectionRange(pos, pos);
-            inp.focus();
+            insertAtCursor(inp, el.dataset.ins);
             state.pattern = inp.value;
             compile();
             render();
@@ -3225,8 +3175,17 @@
         });
       }
 
+      function insertAtCursor(inp, text) {
+        const start = inp.selectionStart ?? inp.value.length;
+        const end = inp.selectionEnd ?? inp.value.length;
+        inp.value = inp.value.slice(0, start) + text + inp.value.slice(end);
+        const pos = start + text.length;
+        inp.setSelectionRange(pos, pos);
+        inp.focus();
+      }
+
       function escapeAttr(s) {
-        return s.replace(/"/g, "&quot;").replace(/&/g, "&amp;");
+        return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
       }
 
       /* Escape input -> pattern */
@@ -3238,8 +3197,9 @@
       $("#useEscaped").addEventListener("click", () => {
         const esc = $("#escapeOutput").textContent;
         if (!esc) return;
-        $("#pattern").value += esc;
-        state.pattern = $("#pattern").value;
+        const inp = $("#pattern");
+        insertAtCursor(inp, esc);
+        state.pattern = inp.value;
         compile();
         render();
         toast("Inserted into pattern");
@@ -3252,7 +3212,7 @@
         {
           name: "Email",
           desc: "Most common email validation",
-          pattern: "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b",
+          pattern: "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b",
           flags: "g",
           test: "Send the report to alice@example.com or cc bob.smith+work@acme.io.\nInvalid: not-an-email, @nowhere.com, missing@dotcom",
         },
@@ -3678,13 +3638,6 @@
         $("#codeBody").textContent = gen(p, f);
       }
 
-      function jsEscape(s) {
-        return s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-      }
-      function pyEscape(s) {
-        return s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-      }
-
       const CODE_GEN = {
         javascript: (p, f) =>
           `const re = /${p}/${f};\nconst text = "your text here";\n\n// Find all matches\nconst matches = [...text.matchAll(re)];\nfor (const m of matches) {\n  console.log(m[0], "at", m.index);\n}\n\n// Test\nconsole.log(re.test(text));\n\n// Replace\nconst result = text.replace(re, "replacement");`,
@@ -3728,22 +3681,34 @@
             .join(" | ");
           return `using System.Text.RegularExpressions;\n\nvar pattern = @"${p.replace(/"/g, '""')}";\nvar text = "your text here";\n\n${cFlags ? `var re = new Regex(pattern, ${cFlags});\n` : `var re = new Regex(pattern);\n`}foreach (Match m in re.Matches(text)) {\n    Console.WriteLine($"{m.Value} at {m.Index}");\n}\n\nvar result = re.Replace(text, "replacement");`;
         },
-        go: (p, f) =>
-          `import (\n    "fmt"\n    "regexp"\n)\n\n${f.includes("i") ? `re := regexp.MustCompile("(?i)${p.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}")` : `re := regexp.MustCompile("${p.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}")`}\ntext := "your text here"\n\nfor _, m := range re.FindAllString(text, -1) {\n    fmt.Println(m)\n}\n\nresult := re.ReplaceAllString(text, "replacement")`,
-        rust: (p, f) =>
-          `use regex::Regex;\n\nlet re = Regex::new(r#"${p}"#).unwrap();\nlet text = "your text here";\n\nfor m in re.find_iter(text) {\n    println!("{} at {}", m.as_str(), m.start());\n}\n\nlet result = re.replace_all(text, "replacement");`,
+        go: (p, f) => {
+          // Go's regexp takes flags inline: (?i) (?m) (?s)
+          const inline = [...f].filter((c) => "ims".includes(c)).join("");
+          const pat = (inline ? `(?${inline})` : "") + p;
+          return `import (\n    "fmt"\n    "regexp"\n)\n\nre := regexp.MustCompile("${pat.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}")\ntext := "your text here"\n\nfor _, m := range re.FindAllString(text, -1) {\n    fmt.Println(m)\n}\n\nresult := re.ReplaceAllString(text, "replacement")`;
+        },
+        rust: (p, f) => {
+          // The regex crate takes flags inline: (?i) (?m) (?s)
+          const inline = [...f].filter((c) => "ims".includes(c)).join("");
+          return `use regex::Regex;\n\nlet re = Regex::new(r#"${(inline ? `(?${inline})` : "") + p}"#).unwrap();\nlet text = "your text here";\n\nfor m in re.find_iter(text) {\n    println!("{} at {}", m.as_str(), m.start());\n}\n\nlet result = re.replace_all(text, "replacement");`;
+        },
         ruby: (p, f) => {
-          const rbF = [...f].filter((c) => "imx".includes(c)).join("");
+          // Ruby: /m is dotall (JS /s); JS /m behavior is Ruby's default
+          const rbF =
+            (f.includes("i") ? "i" : "") + (f.includes("s") ? "m" : "");
           return `pattern = /${p}/${rbF}\ntext = "your text here"\n\ntext.scan(pattern) { |m| puts m.inspect }\n\nresult = text.gsub(pattern, "replacement")`;
         },
         php: (p, f) => {
           const phpF = [...f].filter((c) => "imsxu".includes(c)).join("");
           return `<?php\n$pattern = '/${p.replace(/\//g, "\\/")}/${phpF}';\n$text = 'your text here';\n\npreg_match_all($pattern, $text, $matches);\nprint_r($matches[0]);\n\n$result = preg_replace($pattern, 'replacement', $text);`;
         },
-        perl: (p, f) =>
-          `my $text = "your text here";\nmy @matches = ($text =~ /${p}/${f}g);\nprint join("\\n", @matches);\n\n$text =~ s/${p}/replacement/${f};`,
+        perl: (p, f) => {
+          // Only i/m/s carry over; g is added explicitly where it applies
+          const mods = [...f].filter((c) => "ims".includes(c)).join("");
+          return `my $text = "your text here";\nmy @matches = ($text =~ /${p}/${mods}g);\nprint join("\\n", @matches);\n\n$text =~ s/${p}/replacement/${mods}${f.includes("g") ? "g" : ""};`;
+        },
         bash: (p, f) =>
-          `# Using grep -E (extended regex)\ngrep -E${f.includes("i") ? "i" : ""} '${p.replace(/'/g, "'\\''")}' input.txt\n\n# Using sed to replace\nsed -E${f.includes("i") ? "" : ""} 's/${p.replace(/\//g, "\\/")}/replacement/${f.includes("g") ? "g" : ""}' input.txt`,
+          `# Using grep -E (extended regex)\ngrep -E${f.includes("i") ? "i" : ""} '${p.replace(/'/g, "'\\''")}' input.txt\n\n# Using sed to replace\nsed -E 's/${p.replace(/\//g, "\\/")}/replacement/${f.includes("g") ? "g" : ""}' input.txt`,
       };
 
       /* ---------- Toast ---------- */
@@ -3759,6 +3724,7 @@
       /* ---------- Init ---------- */
       function init() {
         buildChips();
+        buildReplaceTokens();
         buildLibrary();
         buildCheat();
         buildCodeTabs();
