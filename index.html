@@ -54,13 +54,14 @@
         --shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
 
         /* Pattern syntax: cool hues for structure, so the warm capture
-           group palette below always reads as "data". */
+           group palette below always reads as "data". The exception is
+           | in magenta: it must stand out, and red means an error. */
         --syn-esc: #7dd3fc;
         --syn-class: #a5b4fc;
-        --syn-class-in: #c9d3ff;
-        --syn-quant: #c4b5fd;
+        --syn-class-in: #b5c1f9;
+        --syn-quant: #ac82ff;
         --syn-anchor: #5eead4;
-        --syn-alt: #f4f7fc;
+        --syn-alt: #fb4cf2;
         --syn-nc: #7f90b3;
         --syn-look: #60a5fa;
 
@@ -3577,7 +3578,7 @@
               d: "Capture group — select text first to wrap it",
               ins: "(‸)",
             },
-            { t: "(?:…)", d: "Group without capturing", ins: "(?:‸)" },
+            { t: "(?:…)", d: "Non-capturing group", ins: "(?:‸)" },
             { t: "(?<name>…)", d: "Named capture group", ins: "(?<«name»>‸)" },
             { t: "|", d: "Either the left side or the right side" },
             {
@@ -6101,7 +6102,7 @@
           case "cap":
             return `<strong class="gtext ${gc(g.index)}">Capture group ${g.index}</strong>${g.name ? `, named <code>${esc(g.name)}</code>` : ""}`;
           case "nc":
-            return "Group, not captured";
+            return "Non-capturing group";
           case "la":
             return "<strong>Lookahead</strong> — must be followed by:";
           case "nla":
@@ -6113,7 +6114,7 @@
           default: {
             const on = [...g.mods.on].map(flagName);
             const off = [...g.mods.off].map(flagName);
-            return `Group with ${[on.length ? on.join(", ") + " on" : "", off.length ? off.join(", ") + " off" : ""].filter(Boolean).join(" and ")}`;
+            return `Non-capturing group with ${[on.length ? on.join(", ") + " on" : "", off.length ? off.join(", ") + " off" : ""].filter(Boolean).join(" and ")}`;
           }
         }
       }
