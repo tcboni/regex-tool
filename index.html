@@ -6756,10 +6756,10 @@
         buildLangs();
         const saved = loadSaved();
         const s = {
-          pattern: "\\b(\\w+)@(\\w+\\.\\w+)\\b",
+          pattern: "",
           flags: "g",
-          text: "Send the report to alice@example.com or bob@acme.io.\nQuestions? Write to help@example.org — not to me.",
-          replacement: "$1 at $2",
+          text: "",
+          replacement: "",
           tab: "matches",
           mode: "replace",
           lang: "javascript",
